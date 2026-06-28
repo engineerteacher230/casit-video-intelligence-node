@@ -1,0 +1,82 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+.venv-vllm/
+venv/
+env/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Large model weights
+*.pt
+*.pth
+*.onnx
+*.engine
+*.safetensors
+
+# CASIT local data - DO NOT COMMIT
+casit-data/
+data/
+datasets/
+outputs/
+runs/
+
+# Local external data path references
+~/casit-data/
+~/casit/
+
+# Video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.flv
+*.wmv
+*.m4v
+*:Zone.Identifier
+
+# Images / extracted frames
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.webp
+
+# Temporary files
+tmp/
+temp/
+.cache/
+.ipynb_checkpoints/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Large archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.deb
+scripts/backups/
+models/

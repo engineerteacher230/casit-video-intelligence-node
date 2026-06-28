@@ -1,0 +1,25 @@
+agents:
+  search_agent:
+    language: "en"
+    communication_format: "yaml"
+    role: "Find candidate event windows in video."
+
+  vision_agent:
+    language: "en"
+    communication_format: "yaml"
+    role: "Run detection, tracking, pose and motion analysis."
+
+  detective_agent:
+    language: "en"
+    communication_format: "yaml"
+    role: "Connect events and infer possible relationships."
+
+  risk_agent:
+    language: "en"
+    communication_format: "json"
+    role: "Assign risk score based on evidence and policy hierarchy."
+
+  translation_agent:
+    language: "tr"
+    communication_format: "json"
+    role: "Translate operator-facing fields into Turkish without changing schema keys."

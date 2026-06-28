@@ -1,0 +1,38 @@
+analysis_strategy:
+  project_name: "CASIT"
+  display_name: "ÇAŞIT"
+  mode: "multi_stage_adaptive_temporal_resolution"
+  hardware_profile: "rtx4060_laptop_32gb_ram"
+
+coarse_scan:
+  fps: 3
+  resize_width: 960
+  purpose: "detect candidate event windows"
+
+context_window:
+  before_seconds: 5
+  after_seconds: 5
+  fps: 10
+  resize_width: 1280
+  expansion_seconds: 5
+
+critical_core:
+  max_fps: 60
+  respect_source_fps: true
+  max_duration_seconds: 10
+  resize_width: 1920
+  selection_method: "highest_event_energy_interval"
+
+overlap_handling:
+  enabled: true
+  relation_checks:
+    - temporal_overlap
+    - spatial_proximity
+    - same_track_id
+    - causal_plausibility
+
+performance_limits:
+  max_parallel_videos: 1
+  batch_size: 1
+  prefer_fp16: true
+  gpu_memory_safe_mode: true

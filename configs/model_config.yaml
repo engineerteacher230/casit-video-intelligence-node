@@ -1,0 +1,22 @@
+vision:
+  detection_model_family: "yolo"
+  detection_model_size: "nano"
+  detection_model_file: "yolo11n.pt"
+  pose_model_size: "nano"
+  device: "cuda"
+  fallback_device: "cpu"
+  precision: "fp16"
+
+llm:
+  first_stage_backend: "ollama_later"
+  later_backend: "vllm_optional"
+  recommended_model_size: "3b_to_7b_quantized"
+  internal_language: "en"
+  final_language: "tr"
+  output_format: "json"
+
+runtime:
+  external_api_allowed: false
+  local_only: true
+  identity_recognition_allowed: false
+  max_concurrent_jobs: 1

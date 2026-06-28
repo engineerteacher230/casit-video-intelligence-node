@@ -1,0 +1,18 @@
+# CASIT / ÇAŞIT requirements index
+#
+# This project uses two separate Python environments:
+#
+# 1. requirements-yolo.txt
+#    Main video pipeline:
+#    - OpenCV
+#    - YOLO / Ultralytics
+#    - tracking
+#    - reporting
+#
+# 2. requirements-vllm.txt
+#    VLM server environment:
+#    - vLLM
+#    - Qwen/Qwen2.5-VL dependencies
+#
+# Recommended:
+# Create separate virtual environments instead of installing everything into one environment.

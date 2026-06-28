@@ -1,0 +1,27 @@
+risk_levels:
+  low:
+    min: 0.0
+    max: 0.30
+  medium:
+    min: 0.31
+    max: 0.60
+  high:
+    min: 0.61
+    max: 0.80
+  critical:
+    min: 0.81
+    max: 1.0
+
+risk_weights:
+  severity_score: 0.35
+  probability_score: 0.25
+  evidence_confidence: 0.20
+  temporal_persistence: 0.10
+  proximity_score: 0.10
+
+policy_hierarchy:
+  - competition_specification
+  - applicable_law_and_data_protection
+  - occupational_safety_rules
+  - domain_sop
+  - general_ai_ethics

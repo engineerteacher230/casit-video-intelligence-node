@@ -1,0 +1,467 @@
+{
+  "version": "0.1",
+  "description": "CASIT / ÇAŞIT general scene-to-YOLO focus policy file. This is not football-specific. Qwen/VLM first infers the scene, then this file decides which YOLO labels should be focused.",
+  "default_policy": "unknown_general",
+  "scene_type_mapping": {
+    "traffic_scene": "traffic_general",
+    "road_scene": "traffic_general",
+    "road_accident": "traffic_general",
+    "vehicle_pedestrian_scene": "traffic_general",
+    "industrial_factory_scene": "industrial_factory",
+    "factory_scene": "industrial_factory",
+    "warehouse_scene": "warehouse_forklift",
+    "warehouse_forklift_scene": "warehouse_forklift",
+    "forklift_operation_scene": "warehouse_forklift",
+    "public_crowd_scene": "crowd_general",
+    "crowd_event": "crowd_general",
+    "queue_scene": "crowd_general",
+    "general_security_scene": "security_general",
+    "security_scene": "security_general",
+    "checkpoint_scene": "security_general",
+    "military_activity": "security_general",
+    "convoy_scene": "security_general",
+    "sports_scene": "sports_general",
+    "football_scene": "sports_general",
+    "soccer_scene": "sports_general",
+    "football_match_goal_celebration": "sports_general",
+    "unknown_scene": "unknown_general"
+  },
+  "keyword_mapping": [
+    {
+      "policy": "traffic_general",
+      "keywords": [
+        "traffic",
+        "road",
+        "street",
+        "intersection",
+        "vehicle",
+        "pedestrian",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle",
+        "accident"
+      ]
+    },
+    {
+      "policy": "warehouse_forklift",
+      "keywords": [
+        "warehouse",
+        "forklift",
+        "pallet",
+        "logistics",
+        "storage",
+        "loading",
+        "unloading"
+      ]
+    },
+    {
+      "policy": "industrial_factory",
+      "keywords": [
+        "factory",
+        "industrial",
+        "production",
+        "machine",
+        "worker",
+        "workshop",
+        "assembly",
+        "manufacturing"
+      ]
+    },
+    {
+      "policy": "security_general",
+      "keywords": [
+        "security",
+        "checkpoint",
+        "military",
+        "convoy",
+        "patrol",
+        "guard",
+        "restricted",
+        "surveillance"
+      ]
+    },
+    {
+      "policy": "crowd_general",
+      "keywords": [
+        "crowd",
+        "gathering",
+        "queue",
+        "public",
+        "group",
+        "people",
+        "event"
+      ]
+    },
+    {
+      "policy": "sports_general",
+      "keywords": [
+        "sports",
+        "football",
+        "soccer",
+        "match",
+        "goal",
+        "celebration",
+        "stadium"
+      ]
+    }
+  ],
+  "policies": {
+    "unknown_general": {
+      "description": "Fallback policy when the scene is not clear yet. Keep it broad but not chaotic.",
+      "allowed_yolo_labels": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "traffic light",
+        "stop sign",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck"
+      ],
+      "event_questions": [
+        "Sahnede insan var mı?",
+        "Sahnede araç var mı?",
+        "İnsan ve araç yakınlaşması var mı?",
+        "Kalabalık artışı veya ani hareket var mı?",
+        "Belirsiz ama önemli bir hareketlilik var mı?"
+      ],
+      "custom_classes_later": []
+    },
+    "traffic_general": {
+      "description": "Road, traffic, pedestrian, vehicle and accident-like scenes.",
+      "allowed_yolo_labels": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "traffic light",
+        "stop sign"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball"
+      ],
+      "tracking_targets": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck"
+      ],
+      "event_questions": [
+        "Kaç benzersiz insan var?",
+        "Kaç benzersiz araç var?",
+        "Yaya araç yoluna giriyor mu?",
+        "Araç duruyor mu, hızlanıyor mu veya yön değiştiriyor mu?",
+        "Araç-yaya tehlikeli yakınlaşması var mı?",
+        "Trafik akışında anomali var mı?"
+      ],
+      "custom_classes_later": []
+    },
+    "industrial_factory": {
+      "description": "Factory, workshop, production line and worker-machine interaction scenes.",
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "backpack",
+        "handbag",
+        "suitcase",
+        "chair"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "sports ball",
+        "baseball bat",
+        "baseball glove"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "truck",
+        "bus"
+      ],
+      "event_questions": [
+        "Kaç benzersiz çalışan/insan var?",
+        "İnsanlar makine veya araç bölgesine yaklaşıyor mu?",
+        "Riskli yakınlaşma var mı?",
+        "Hareketsiz kalma, düşme veya olağan dışı hareket var mı?",
+        "Üretim alanında beklenmeyen yoğunluk var mı?"
+      ],
+      "custom_classes_later": [
+        "helmet",
+        "safety_vest",
+        "machine",
+        "robot_arm",
+        "restricted_zone"
+      ]
+    },
+    "warehouse_forklift": {
+      "description": "Warehouse, forklift, logistics and loading/unloading scenes. COCO YOLO may not directly detect forklift, so forklift is marked as a later custom class.",
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "sports ball",
+        "baseball bat",
+        "baseball glove"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "truck",
+        "bus"
+      ],
+      "event_questions": [
+        "Kaç benzersiz insan var?",
+        "Kaç hareketli araç/forklift benzeri nesne var?",
+        "İnsan ile forklift/araç arasında riskli yakınlaşma var mı?",
+        "Yükleme-boşaltma alanında beklenmeyen insan varlığı var mı?",
+        "Araç veya insan uzun süre aynı noktada kalıyor mu?"
+      ],
+      "custom_classes_later": [
+        "forklift",
+        "pallet",
+        "box",
+        "safety_vest",
+        "helmet",
+        "restricted_zone"
+      ]
+    },
+    "security_general": {
+      "description": "General security, checkpoint, convoy, patrol, restricted area and surveillance-like scenes. This policy stays at general object and movement level.",
+      "allowed_yolo_labels": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "airplane",
+        "boat",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket"
+      ],
+      "tracking_targets": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "boat",
+        "airplane"
+      ],
+      "event_questions": [
+        "Kaç benzersiz insan var?",
+        "Kaç benzersiz araç var?",
+        "Araç konvoyu veya toplu hareket var mı?",
+        "İnsan/araç yoğunluğu artıyor mu?",
+        "Belirli bir bölgede olağan dışı hareketlilik var mı?",
+        "Sahne genel güvenlik açısından izlenmeye değer mi?"
+      ],
+      "custom_classes_later": [
+        "restricted_zone",
+        "gate",
+        "barrier",
+        "uniform",
+        "helmet"
+      ]
+    },
+    "crowd_general": {
+      "description": "Public crowd, queue, gathering and group movement scenes.",
+      "allowed_yolo_labels": [
+        "person",
+        "backpack",
+        "handbag",
+        "suitcase",
+        "car",
+        "bus",
+        "truck"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "bus",
+        "truck"
+      ],
+      "event_questions": [
+        "Kaç benzersiz insan var?",
+        "Kalabalık artıyor mu azalıyor mu?",
+        "Toplanma, dağılma veya ani yön değişimi var mı?",
+        "Yoğunluk belirli bir bölgede mi artıyor?",
+        "Uzun süre sabit kalan veya ters yönde hareket eden kişi var mı?"
+      ],
+      "custom_classes_later": [
+        "crowd_density_zone",
+        "restricted_zone"
+      ]
+    },
+    "sports_general": {
+      "description": "Sports scenes. This is only one possible domain, not the product focus.",
+      "allowed_yolo_labels": [
+        "person",
+        "sports ball"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove"
+      ],
+      "tracking_targets": [
+        "person",
+        "sports ball"
+      ],
+      "event_questions": [
+        "Kaç benzersiz insan/oyuncu var?",
+        "Top hangi zamanlarda görülüyor?",
+        "Kalabalık veya grup hareketi var mı?",
+        "Gol/sevinç gibi ani hareket yoğunluğu var mı?"
+      ],
+      "custom_classes_later": []
+    },
+    "construction_site_general": {
+      "description": "Construction sites, roadworks, work zones and heavy vehicle activity scenes.",
+      "scene_type_keywords": [
+        "construction",
+        "construction_site",
+        "roadwork",
+        "work_zone",
+        "building_site",
+        "excavation"
+      ],
+      "domain_keywords": [
+        "construction",
+        "industrial"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle",
+        "traffic light",
+        "stop sign"
+      ],
+      "blocked_yolo_labels": [
+        "sports ball",
+        "baseball bat",
+        "baseball glove",
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle"
+      ],
+      "event_questions": [
+        "İnsanlar çalışma sahasına giriyor mu?",
+        "Ağır araç veya kamyon hareketi var mı?",
+        "Yaya-araç yakınlaşması var mı?",
+        "Çalışma alanında olağan dışı hareketlilik var mı?",
+        "Trafik akışı çalışma alanından etkileniyor mu?"
+      ],
+      "custom_classes_later": [
+        "excavator",
+        "crane",
+        "loader",
+        "bulldozer",
+        "hard_hat",
+        "safety_vest",
+        "traffic_cone",
+        "barrier",
+        "roadwork_sign"
+      ]
+    }
+  }
+}
