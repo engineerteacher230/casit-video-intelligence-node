@@ -28,6 +28,7 @@ fi
 
 SERVER_URL="${CASIT_VLM_SERVER_URL:-http://127.0.0.1:8000}"
 MODEL="${CASIT_VLM_MODEL:-casit-vlm-strong}"
+YOLO_MODEL="${CASIT_YOLO_MODEL:-$DATA_DIR/models/yolo11n.pt}"
 
 cd "$PROJECT_DIR"
 
@@ -46,10 +47,11 @@ Project    : $PROJECT_DIR
 Data dir   : $DATA_DIR
 VLM URL    : $SERVER_URL
 VLM model  : $MODEL
+YOLO model  : $YOLO_MODEL
 INFO
 
 echo "=========================================="
-echo "CASIT / ÇAŞIT FULL VIDEO PIPELINE v0.3"
+echo "CASIT / ÇAŞIT FULL VIDEO PIPELINE v0.4"
 echo "=========================================="
 echo "Video path : $VIDEO_PATH"
 echo "Video name : $VIDEO_NAME"
@@ -59,6 +61,7 @@ echo "Project   : $PROJECT_DIR"
 echo "Data dir  : $DATA_DIR"
 echo "VLM URL   : $SERVER_URL"
 echo "VLM model : $MODEL"
+echo "YOLO model: $YOLO_MODEL"
 echo "=========================================="
 
 if [[ ! -f "$VIDEO_PATH" ]]; then
@@ -146,7 +149,7 @@ echo "[9/15] Domain-aware YOLO çalışıyor..."
 "$PY_YOLO" src/vision/domain_aware_yolo_detector.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --detail-report "$JSON_DIR/detail_frames_report.json" \
-  --model yolo11n.pt \
+  --model "$YOLO_MODEL" \
   --output-json "$JSON_DIR/domain_detection_report.json" \
   --focused-policy "$JSON_DIR/focused_yolo_policy.json" \
   --annotated-dir "$ANNOTATED_DIR/domain_aware_yolo_detail" \
