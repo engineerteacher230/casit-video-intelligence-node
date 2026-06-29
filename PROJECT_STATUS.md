@@ -256,7 +256,7 @@ The system is still offline.
 
 It does not yet support:
 
-- live stream / RTSP monitoring
+- sürekli kamera izleme ürünü
 - dashboard
 - strong multi-object tracking such as ByteTrack or BoT-SORT
 - custom trained construction or safety object classes
@@ -288,7 +288,7 @@ Semantic event is the interpreted event layer.
 
 ## Ethical Boundary
 
-Do not use the system for unauthorized MOBESE, CCTV, or public/security camera access.
+Do not use the system for unauthorized camera or security-system analysis.
 
 Do not perform face recognition.
 
@@ -304,27 +304,31 @@ Use only owned, permitted, or test videos.
 
 ### Immediate project finalization
 
-1. Clean requirements files.
-2. Check git status.
-3. Initialize git repository if not already initialized.
-4. Commit clean code and documentation.
-5. Create private GitHub repository.
-6. Push code to GitHub.
-7. Share private repo access with collaborator.
+1. Keep the GitHub repository clean.
+2. Keep large videos and models outside GitHub.
+3. Use SCENARIO_3_SCOPE.md as the project scope lock.
+4. Keep README.md, CLAUDE.md and PROJECT_STATUS.md aligned with Scenario 3.
+5. Push every stable milestone to GitHub.
 
-### Technical v0.4
+### Technical v0.4 — Scenario 3 Output Compliance
 
-Add live stream / chunk-based monitoring:
+Add a single official output schema:
 
-RTSP or webcam
-→ 10-30 second chunks
-→ CASIT full pipeline or reduced fast pipeline
-→ semantic event report
-→ alert/dashboard
+- summary_tr
+- events
+- start_time
+- end_time
+- peak_time
+- event_type
+- event_name_tr
+- risk_level
+- evidence
+- operator_actions_tr
+- overall_risk
+- decision_support_tr
+- limitations_tr
 
-### Technical v0.5
-
-Add VLM-based event reasoning per context window:
+### Technical v0.5 — Event VLM Reasoner
 
 For each planned_context_window:
 
@@ -333,47 +337,48 @@ peak frame
 end frame
 → Qwen/VLM event interpretation
 → event name
-→ risk level
+→ risk rationale
+→ critical timestamp
 → evidence summary
-→ recommended action
 
-### Technical v0.6
+### Technical v0.6 — Risk & Action Engine
 
-Add dashboard:
+Generate:
 
-- run browser
-- event timeline
-- report viewer
-- evidence thumbnails
-- video/frame preview
+- low / medium / high / critical risk levels
+- operator action suggestions
+- Turkish decision-support explanation
+- explainable evidence mapping
 
-### Technical v0.7
+### Technical v0.7 — KPI / Benchmark
 
-Improve tracking:
+Measure:
 
-- ByteTrack
-- BoT-SORT
-- better unique object/person estimation
+- event detection quality
+- critical moment capture quality
+- summary quality
+- action recommendation usefulness
+- processing time
+- model inference time
+- memory and hardware usage
 
-### Technical v0.8
+### Technical v0.8 — Competition Delivery Package
 
-Custom model classes:
+Prepare:
 
-- excavator
-- crane
-- loader
-- bulldozer
-- hard_hat
-- safety_vest
-- traffic_cone
-- barrier
-- roadwork_sign
+- preliminary evaluation report
+- architecture diagram
+- demo video
+- slide deck
+- installation guide
+- run guide
+- benchmark report
 
 ---
 
 ## Sharing Recommendation
 
-Use GitHub private repository for code.
+Use GitHub private repository during development.
 
 Do not share large data through GitHub.
 
@@ -384,3 +389,5 @@ The collaborator should clone the repository and create their own local:
 ~/casit-data
 
 folder.
+
+Before official competition delivery, re-check the latest TEKNOFEST open-source and licensing requirements.

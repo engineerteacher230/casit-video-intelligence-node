@@ -171,7 +171,7 @@ Sistem şu anda offline video analizi yapar.
 
 Henüz şunlar yoktur:
 
-- canlı kamera / RTSP pipeline
+- sürekli kamera izleme ürünü
 - dashboard
 - ByteTrack / BoT-SORT entegrasyonu
 - custom construction/safety class modeli
@@ -180,37 +180,78 @@ Henüz şunlar yoktur:
 
 ## Etik Sınır
 
-Yetkisiz MOBESE veya kamu kamerası analizi yapılmamalıdır.
+Yetkisiz kamera veya güvenlik sistemi analizi yapılmamalıdır.
 
 Kişi kimliği, yüz tanıma veya bireysel takip yapılmamalıdır.
 
 Sistem yalnızca izinli, sahip olunan veya test amaçlı videolarla kullanılmalıdır.
 
-## Yol Haritası
+## Senaryo 3 Kapsam Kilidi
 
-v0.4:
-Live stream / chunk-based monitoring
+Bu proje TEKNOFEST 2026 Yapay Zekâ Dil Ajanları Yarışması 3. Senaryo kapsamına göre geliştirilir.
 
-v0.5:
-VLM tabanlı event reasoning agent
+Odak:
 
-v0.6:
-Dashboard
+- Video dosyası girdisi alma
+- Olayları tespit etme
+- Kişi, araç ve nesne kanıtlarını çıkarma
+- Riskli durumları belirleme
+- Kritik anları zaman damgalarıyla listeleme
+- Türkçe kısa özet üretme
+- Operatöre aksiyon önerileri sunma
+- JSON benzeri yapılandırılmış çıktı üretme
+- Yerel/offline çalışma
+- Dış API veya kapalı servis bağımlılığı olmadan çalışma
 
-v0.7:
-ByteTrack / BoT-SORT tracking
+Detaylı kapsam dosyası:
 
-v0.8:
-Custom object classes
+SCENARIO_3_SCOPE.md
 
-Örnek custom classes:
+## Senaryo 3 Odaklı Yol Haritası
 
-- excavator
-- crane
-- loader
-- bulldozer
-- hard_hat
-- safety_vest
-- traffic_cone
-- barrier
-- roadwork_sign
+### v0.4 — Senaryo 3 Çıktı Standardı
+
+- Standart JSON çıktı şeması
+- Türkçe kısa özet
+- Zaman damgalı olay listesi
+- Risk seviyesi
+- Operatör aksiyon önerileri
+- Açıklanabilir kanıt alanı
+- Belirsizlik / sınırlılık açıklaması
+
+### v0.5 — Event VLM Reasoner
+
+- Her context window için başlangıç, tepe ve bitiş kareleri seçilir.
+- Qwen/VLM bu kareleri yorumlar.
+- Olay adı, risk gerekçesi ve kritik an açıklaması üretilir.
+
+### v0.6 — Risk & Action Engine
+
+- Olay tipine göre risk seviyesi üretir.
+- Operatöre uygulanabilir aksiyon önerileri sunar.
+- Çıktıyı Türkçe ve yapılandırılmış formatta verir.
+
+### v0.7 — KPI / Benchmark
+
+- Olay tespit doğruluğu
+- Kritik olay yakalama oranı
+- Özet kalitesi
+- Aksiyon önerisi doğruluğu
+- İşlem süresi
+- Model inference süresi
+- Bellek ve donanım kullanımı
+
+### v0.8 — Yarışma Teslim Paketi
+
+- Ön değerlendirme raporu
+- Demo videosu
+- Mimari diyagram
+- Kurulum dokümantasyonu
+- Ölçümleme sonuçları
+- Sunum materyali
+
+## Kapsam Notu
+
+CASIT / ÇAŞIT bu fazda kamera izleme ürünü değildir.
+
+CASIT, TEKNOFEST Senaryo 3 kapsamında yüklenen operasyon videosunu yerel ortamda analiz eden ve karar destek çıktısı üreten offline video intelligence sistemidir.

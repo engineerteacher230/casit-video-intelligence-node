@@ -180,19 +180,42 @@ Run full pipeline:
 
 ## Development Priorities
 
-Next good development steps:
+Next development steps must stay strictly aligned with TEKNOFEST Scenario 3.
 
-1. PROJECT_STATUS.md should document the current state.
-2. requirements files should be cleaned.
-3. Git repository should be initialized.
-4. Private GitHub repository should be created.
-5. Friend/collaborator should clone the repo and use separate local data folder.
-6. v0.4 should add live stream / chunk-based monitoring.
-7. v0.5 should add VLM-based event reasoning per context window.
+Priority order:
+
+1. Follow SCENARIO_3_SCOPE.md as the scope lock.
+2. Standardize the official Scenario 3 JSON output schema.
+3. Improve semantic event reasoning.
+4. Add VLM-based event reasoning per context window.
+5. Add risk scoring.
+6. Add Turkish operator action recommendations.
+7. Add Turkish decision-support summary.
+8. Add explainable evidence mapping.
+9. Add KPI and benchmark outputs.
+10. Prepare competition documentation and demo materials.
+
+## Scenario 3 Output Target
+
+The target output should include:
+
+- summary_tr
+- events
+- start_time
+- end_time
+- peak_time
+- event_type
+- event_name_tr
+- risk_level
+- evidence
+- operator_actions_tr
+- overall_risk
+- decision_support_tr
+- limitations_tr
 
 ## Ethical Boundaries
 
-Do not build or suggest unauthorized MOBESE access.
+Do not build or suggest unauthorized camera access.
 
 Do not perform face recognition.
 
@@ -209,8 +232,10 @@ When modifying the project:
 - Make small patches.
 - Verify syntax after each patch.
 - Do not rewrite working modules unnecessarily.
-- Preserve general-purpose architecture.
+- Preserve general-purpose Scenario 3 architecture.
 - Do not make the system football-specific.
+- Do not shift the project toward camera monitoring.
 - Do not confuse frame detections with real object counts.
+- Prioritize event, risk, action, Turkish summary, and JSON output.
 - Keep reports Turkish.
 - Keep code identifiers ASCII-safe.
