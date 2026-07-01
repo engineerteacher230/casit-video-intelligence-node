@@ -1,0 +1,617 @@
+{
+  "project": {
+    "technical_name": "CASIT",
+    "display_name": "ÇAŞIT",
+    "module": "custom_class_strategy",
+    "version": "0.1.0"
+  },
+  "source": {
+    "domain_policy_file": "config/domain_policies.json",
+    "domain_policy_version": "0.5.0",
+    "unique_custom_class_count": 47
+  },
+  "principles_tr": [
+    "Her custom_classes_later girdisi doğrudan YOLO sınıfı değildir.",
+    "Sanal bölge sınıfları polygon/kural tabanlı ele alınmalıdır.",
+    "Kişi niteliği sınıfları person crop attribute classifier ile ele alınmalıdır.",
+    "Yangın/duman gibi görsel durumlar ilk fazda VLM ile doğrulanmalı, sonra özel classifier/segmentation düşünülmelidir.",
+    "İlk eğitim önceliği, birden fazla policy tarafından kullanılan ve Scenario 3 karar desteğine doğrudan katkı veren sınıflara verilmelidir."
+  ],
+  "priority_meaning": {
+    "P0": "Demo ve karar destek mimarisi için hemen modellenmesi gereken sınıf/kavram.",
+    "P1": "İlk özel veri seti ve model genişletme fazı için güçlü aday.",
+    "P2": "Domain genişledikçe eklenmesi mantıklı orta öncelikli aday.",
+    "P3": "Ertelenebilir; özel veri, etik kontrol veya ek altyapı gerektirir."
+  },
+  "custom_class_backlog": [
+    {
+      "class_name": "restricted_zone",
+      "priority": "P0",
+      "class_type": "virtual_zone",
+      "recommended_implementation": "polygon_rule_or_scene_config",
+      "training_need": "no_yolo_training_initially",
+      "policy_count": 11,
+      "used_by_policies": [
+        "industrial_factory",
+        "warehouse_forklift",
+        "security_general",
+        "crowd_general",
+        "checkpoint_security",
+        "convoy_movement",
+        "harbor_port",
+        "airport_runway",
+        "border_restricted_area",
+        "parking_lot_general",
+        "indoor_corridor_entrance"
+      ],
+      "reason_tr": "Birçok domain için ortak güvenlik bölgesi kavramı. Nesne değil; koordinat/polygon tabanlı kural olarak ele alınmalı."
+    },
+    {
+      "class_name": "barrier",
+      "priority": "P0",
+      "class_type": "physical_object",
+      "recommended_implementation": "custom_yolo_or_vlm_verified_object",
+      "training_need": "small_custom_dataset",
+      "policy_count": 6,
+      "used_by_policies": [
+        "security_general",
+        "construction_site_general",
+        "checkpoint_security",
+        "convoy_movement",
+        "border_restricted_area",
+        "parking_lot_general"
+      ],
+      "reason_tr": "Kontrol noktası, sınır, şantiye ve park alanı için yüksek değerli fiziksel engel sınıfı."
+    },
+    {
+      "class_name": "gate",
+      "priority": "P0",
+      "class_type": "physical_object",
+      "recommended_implementation": "custom_yolo_or_scene_anchor",
+      "training_need": "small_custom_dataset",
+      "policy_count": 4,
+      "used_by_policies": [
+        "security_general",
+        "checkpoint_security",
+        "border_restricted_area",
+        "parking_lot_general"
+      ],
+      "reason_tr": "Giriş/çıkış ve kontrol noktası karar destek mantığında sahne çıpası olarak kritik."
+    },
+    {
+      "class_name": "helmet",
+      "priority": "P1",
+      "class_type": "ppe_object",
+      "recommended_implementation": "custom_yolo_or_person_crop_classifier",
+      "training_need": "custom_dataset_or_open_dataset_adaptation",
+      "policy_count": 3,
+      "used_by_policies": [
+        "industrial_factory",
+        "warehouse_forklift",
+        "security_general"
+      ],
+      "reason_tr": "İş güvenliği, fabrika, depo ve güvenlik sahneleri için kişisel koruyucu ekipman sınıfı."
+    },
+    {
+      "class_name": "safety_vest",
+      "priority": "P1",
+      "class_type": "ppe_object",
+      "recommended_implementation": "custom_yolo_or_person_crop_classifier",
+      "training_need": "custom_dataset_or_open_dataset_adaptation",
+      "policy_count": 3,
+      "used_by_policies": [
+        "industrial_factory",
+        "warehouse_forklift",
+        "construction_site_general"
+      ],
+      "reason_tr": "Şantiye, depo ve endüstriyel saha için yüksek faydalı PPE sınıfı."
+    },
+    {
+      "class_name": "fence",
+      "priority": "P1",
+      "class_type": "physical_boundary",
+      "recommended_implementation": "custom_yolo_or_segmentation",
+      "training_need": "custom_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "border_restricted_area"
+      ],
+      "reason_tr": "Sınır, çevre güvenliği ve kısıtlı alan senaryolarında önemli."
+    },
+    {
+      "class_name": "fire",
+      "priority": "P1",
+      "class_type": "visual_state",
+      "recommended_implementation": "vlm_first_then_segmentation_or_classifier",
+      "training_need": "specialized_visual_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "Acil durum tespiti için yüksek değerli; COCO içinde doğrudan yok."
+    },
+    {
+      "class_name": "flame",
+      "priority": "P1",
+      "class_type": "visual_state",
+      "recommended_implementation": "merge_with_fire_or_subclass",
+      "training_need": "class_alias_normalization",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "fire ile aynı olay ailesinde; ilk fazda fire alias olarak ele alınmalı."
+    },
+    {
+      "class_name": "forklift",
+      "priority": "P1",
+      "class_type": "vehicle_subclass",
+      "recommended_implementation": "custom_yolo",
+      "training_need": "custom_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "warehouse_forklift"
+      ],
+      "reason_tr": "Depo/lojistik sahalarında insan-araç yakınlaşması için kritik."
+    },
+    {
+      "class_name": "hard_hat",
+      "priority": "P1",
+      "class_type": "ppe_object",
+      "recommended_implementation": "merge_with_helmet_or_alias",
+      "training_need": "class_alias_normalization",
+      "policy_count": 1,
+      "used_by_policies": [
+        "construction_site_general"
+      ],
+      "reason_tr": "helmet ile aynı anlam ailesinde; veri etiketleme sırasında alias olarak birleştirilmeli."
+    },
+    {
+      "class_name": "smoke",
+      "priority": "P1",
+      "class_type": "visual_state",
+      "recommended_implementation": "vlm_first_then_segmentation_or_classifier",
+      "training_need": "specialized_visual_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "Acil durum ve olay analizi için kritik; kutu yerine segmentation/classification daha uygun olabilir."
+    },
+    {
+      "class_name": "traffic_cone",
+      "priority": "P1",
+      "class_type": "physical_object",
+      "recommended_implementation": "custom_yolo",
+      "training_need": "small_custom_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "construction_site_general"
+      ],
+      "reason_tr": "Şantiye/yol çalışması bağlamında sahne sınırı ve güvenlik uyarısı sağlar."
+    },
+    {
+      "class_name": "crane",
+      "priority": "P2",
+      "class_type": "heavy_equipment",
+      "recommended_implementation": "custom_yolo_or_scene_context",
+      "training_need": "custom_dataset",
+      "policy_count": 2,
+      "used_by_policies": [
+        "construction_site_general",
+        "harbor_port"
+      ],
+      "reason_tr": "Şantiye ve liman sahalarında ortak; ancak ölçek ve görünüş çeşitliliği yüksek."
+    },
+    {
+      "class_name": "ambulance",
+      "priority": "P2",
+      "class_type": "vehicle_subclass",
+      "recommended_implementation": "vehicle_subclass_classifier",
+      "training_need": "custom_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "Acil durum bağlamı için değerli; ilk aşamada truck/car + VLM ile yorumlanabilir."
+    },
+    {
+      "class_name": "excavator",
+      "priority": "P2",
+      "class_type": "heavy_equipment",
+      "recommended_implementation": "custom_yolo",
+      "training_need": "custom_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "construction_site_general"
+      ],
+      "reason_tr": "Şantiye sahasında önemli ama demo için forklift/barrier/PPE kadar acil değil."
+    },
+    {
+      "class_name": "fire_truck",
+      "priority": "P2",
+      "class_type": "vehicle_subclass",
+      "recommended_implementation": "vehicle_subclass_classifier",
+      "training_need": "custom_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "Acil durum bağlamı için değerli; ilk aşamada truck + VLM ile yorumlanabilir."
+    },
+    {
+      "class_name": "license_plate",
+      "priority": "P3",
+      "class_type": "ocr_sensitive",
+      "recommended_implementation": "ocr_module_later",
+      "training_need": "privacy_and_ocr_pipeline_required",
+      "policy_count": 2,
+      "used_by_policies": [
+        "checkpoint_security",
+        "parking_lot_general"
+      ],
+      "reason_tr": "Teknik olarak faydalı ama mahremiyet ve OCR altyapısı gerektirir; erken fazda ertelenmeli."
+    },
+    {
+      "class_name": "uniform",
+      "priority": "P3",
+      "class_type": "person_attribute",
+      "recommended_implementation": "person_crop_attribute_classifier_later",
+      "training_need": "attribute_dataset_required",
+      "policy_count": 2,
+      "used_by_policies": [
+        "security_general",
+        "checkpoint_security"
+      ],
+      "reason_tr": "Kişi niteliği sınıfıdır; doğrudan nesne kutusu olarak ele almak zayıf olur."
+    },
+    {
+      "class_name": "access_card_reader",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "indoor_corridor_entrance"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "baggage_cart",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "airport_runway"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "box",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "warehouse_forklift"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "bulldozer",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "construction_site_general"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "cargo_area",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "harbor_port"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "checkpoint_booth",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "checkpoint_security"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "container",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "harbor_port"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "convoy_vehicle",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "convoy_movement"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "crowd_density_zone",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "crowd_general"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "dock_gate",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "harbor_port"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "door",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "indoor_corridor_entrance"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "escort_vehicle",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "convoy_movement"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "evacuation_zone",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "ground_crew",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "airport_runway"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "loader",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "construction_site_general"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "machine",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "industrial_factory"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "pallet",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "warehouse_forklift"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "parking_space",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "parking_lot_general"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "queue_line",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "indoor_corridor_entrance"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "rescue_worker",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "emergency_fire_smoke"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "roadblock",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "convoy_movement"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "roadwork_sign",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "construction_site_general"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "robot_arm",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "industrial_factory"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "runway_marking",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "airport_runway"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "service_vehicle",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "airport_runway"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "ship",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "harbor_port"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "turnstile",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "indoor_corridor_entrance"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "wall",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "border_restricted_area"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    },
+    {
+      "class_name": "warning_sign",
+      "priority": "P3",
+      "class_type": "future_candidate",
+      "recommended_implementation": "defer_until_domain_dataset_exists",
+      "training_need": "needs_problem_specific_dataset",
+      "policy_count": 1,
+      "used_by_policies": [
+        "border_restricted_area"
+      ],
+      "reason_tr": "Domain policy içinde değerli aday olarak tutulur; erken MVP için doğrudan eğitim önceliği düşük."
+    }
+  ]
+}
