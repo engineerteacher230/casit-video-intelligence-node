@@ -1,257 +1,203 @@
 # ÇAŞIT / CASIT Video Intelligence Node
 
-ÇAŞIT / CASIT, bilinmeyen videoları analiz etmek için geliştirilen offline video intelligence ve karar destek prototipidir.
+ÇAŞIT / CASIT, TEKNOFEST 2026 Yapay Zekâ Dil Ajanları Yarışması **Senaryo 3: Video Analiz ve Karar Destek Sistemi** için geliştirilen offline video analiz ve karar destek prototipidir.
 
-Sistem önce Qwen/VLM ile sahneyi anlamaya çalışır, sonra YOLO dedektörünü sahne bağlamına göre dinamik olarak odaklar. Ardından tracking, track kalite rafinesi, olay kanıtı üretimi ve semantik olay raporu oluşturur.
+Sistem; video dosyasını yerel ortamda analiz eder, sahne bağlamını çıkarır, kişi/araç/nesne kanıtlarını üretir, olayları zaman damgalarıyla belirler, risk seviyesini değerlendirir, Türkçe özet ve operatör aksiyon önerileri üretir.
 
-## Proje Adı
+## İsimlendirme
 
-- İnsan-facing ad: ÇAŞIT
-- Teknik ad: CASIT
+- İnsan-facing ad: **ÇAŞIT**
+- Teknik ad: **CASIT**
 
-Teknik dosya, klasör, repo ve komutlarda `CASIT`; rapor ve insan-facing metinlerde `ÇAŞIT` kullanılır.
+Kod, klasör, dosya ve komutlarda `CASIT`; rapor ve kullanıcıya görünen metinlerde `ÇAŞIT` kullanılır.
 
-## Güncel Sürüm
+## Güncel Kabiliyetler
 
-CASIT v0.3.1
+- 24 adımlı uçtan uca video analiz pipeline
+- Yerel Qwen/VLM sahne yorumu
+- Domain policy tabanlı YOLO odaklama
+- Detection, tracking ve track kalite rafinesi
+- Relation Dynamics Analyzer
+- Proximity Risk Engine
+- Event VLM Reasoner
+- Risk & Action Engine v2
+- Standardized Scenario 3 JSON output
+- Scenario 3 Output Validator
+- Benchmark / KPI Reporter
+- Executive Jury Report Builder
+- Multi-video test runner
+- Custom class strategy
 
-## Ana Pipeline
+## Senaryo 3 Kapsamı
 
-1. Video metadata okuma
-2. Coarse frame extraction
-3. Event energy scanning
-4. Context window planning
-5. Detail frame extraction
-6. Scene scout extraction
-7. Qwen/VLM scene prior
-8. Domain policy selection
-9. Domain-aware YOLO detection
-10. Tracking
-11. Track quality refinement
-12. Event evidence building
-13. Final Türkçe rapor
-14. Semantic event report
+Bu proje şu işleri hedefler:
 
-## Temel Mimari Mantık
+- Video dosyası girdisi alma
+- Videodaki olayları, kişileri, araçları ve riskli durumları analiz etme
+- Kritik anları zaman damgalarıyla belirleme
+- Türkçe kısa özet üretme
+- Operatöre aksiyon önerileri sunma
+- JSON ve Markdown rapor üretme
+- Yerel/offline çalışabilme
+- Dış API veya kapalı servis bağımlılığı olmadan çalışabilme
 
-CASIT futbol videosuna özel değildir. Futbol sadece ilk test örneğidir.
+Bu proje şu anda şunları hedeflemez:
 
-Genel akış:
+- Canlı kamera / RTSP / MOBESE izleme
+- Yüz tanıma
+- Kişi kimliği tespiti
+- Bireysel takip
+- Yetkisiz kamera analizi
+- Gerçek zamanlı operasyon ürünü
 
-Bilinmeyen video
-→ sahne keşfi
-→ VLM/Qwen sahne yorumu
-→ domain policy seçimi
-→ YOLO odaklama
+## Ana Mimari Akış
+
+```text
+Video dosyası
+→ metadata okuma
+→ coarse frame extraction
+→ event energy scanning
+→ context window planning
+→ detail frame extraction
+→ scene scout
+→ Qwen/VLM scene prior
+→ domain policy selection
+→ domain-aware YOLO detection
 → tracking
+→ relation dynamics
+→ proximity risk
+→ track quality refinement
 → event evidence
-→ semantic event report
-→ Türkçe final rapor
-
-## Kritik Ayrımlar
-
-Frame detection gerçek fiziksel sayı değildir.
-
-Raw track count kesin kişi/araç sayısı değildir.
-
-Stable track count daha güvenilir tahmindir.
-
-Motion candidate semantic event değildir.
-
-Context window makro olay adayıdır.
-
-Semantic event anlamlandırılmış olaydır.
-
-## Ana Dizinler
-
-Proje dizini:
-
-~/casit/projects/casit-video-intelligence-node
-
-Veri dizini:
-
-~/casit-data
-
-Raw video dizini:
-
-~/casit-data/datasets/raw_videos
-
-Run çıktıları:
-
-~/casit-data/outputs/runs
-
-Latest kısa yolu:
-
-~/casit-data/outputs/runs/latest
-
-## GitHub'a Girecekler
-
-- src/
-- config/
-- scripts/
-- README.md
-- CLAUDE.md
-- PROJECT_STATUS.md
-- requirements*.txt
-- .gitignore
-
-## GitHub'a Girmeyecekler
-
-- .venv/
-- .venv-vllm/
-- raw videolar
-- extracted frames
-- outputs/runs/
-- model weights
-- cache dosyaları
-- ~/casit-data/
+→ semantic event
+→ event VLM reasoning
+→ risk/action v2
+→ Scenario 3 output
+→ schema standardization
+→ validation
+→ quality review
+→ benchmark KPI
+→ executive jury report
+```
 
 ## Full Pipeline Çalıştırma
 
-Proje dizinine gir:
-
+```bash
 cd ~/casit/projects/casit-video-intelligence-node
-
-YOLO ortamını aktif et:
-
 source .venv/bin/activate
-
-VLM server açık olmalı:
-
-http://127.0.0.1:8000
-
-Bir video analiz et:
-
 ./scripts/run_casit_full_pipeline.sh ~/casit-data/datasets/raw_videos/cccc.mp4
+```
 
-## Test Edilen Videolar
+VLM server açık olmalıdır:
 
-insan.mp4:
-football_match_goal_celebration / sports
+```text
+http://127.0.0.1:8000
+```
 
-aaa.mp4:
-roundabout_traffic / traffic
+Varsayılan VLM model:
 
-bbbbb.mp4:
-street_confrontation / traffic
+```text
+Qwen/Qwen2.5-VL-3B-Instruct
+```
 
-cccc.mp4:
-construction_site / traffic
+Varsayılan YOLO model:
 
-cccc.mp4 sonrası önemli düzeltme:
-construction_site sahnesi artık traffic_general yerine construction_site_general policy seçer.
+```text
+~/casit-data/models/yolo11n.pt
+```
 
-## Güncel Policy Listesi
+## Önemli Çıktılar
 
-- unknown_general
-- traffic_general
-- industrial_factory
-- warehouse_forklift
-- security_general
-- crowd_general
-- sports_general
-- construction_site_general
+Her run şu dizine yazılır:
 
-## Önemli Selector Kuralı
+```text
+~/casit-data/outputs/runs/<video_name>_<timestamp>
+```
 
-scene_type, domain bilgisinden daha güçlüdür.
+Latest symlink:
 
-Örnek:
+```text
+~/casit-data/outputs/runs/latest
+```
 
-scene_type = construction_site
-domain = traffic
+Ana teslim JSON adayı:
 
-Doğru policy:
+```text
+json/standardized_scenario_3_output.json
+```
 
+Jüri/demo için ana rapor:
+
+```text
+reports/executive_jury_report.md
+```
+
+Diğer önemli raporlar:
+
+```text
+reports/benchmark_kpi_report.md
+reports/scenario_3_output_validation.md
+reports/standardized_scenario_3_output.md
+```
+
+## Test Videoları
+
+```text
+aaa.mp4    → roundabout_traffic / traffic
+bbbbb.mp4  → street_confrontation / traffic
+cccc.mp4   → construction_site / traffic
+ddd.mp4    → crowd / outdoor
+insan.mp4  → football_match_goal_celebration / sports
+```
+
+## Domain Policy Yaklaşımı
+
+CASIT tek bir sabit YOLO sınıf listesiyle çalışmaz. Önce sahne bağlamını çıkarır, sonra uygun domain policy seçer.
+
+Mevcut policy ailesi:
+
+```text
+unknown_general
+traffic_general
+industrial_factory
+warehouse_forklift
+security_general
+crowd_general
+sports_general
 construction_site_general
+checkpoint_security
+convoy_movement
+harbor_port
+airport_runway
+emergency_fire_smoke
+border_restricted_area
+parking_lot_general
+indoor_corridor_entrance
+```
 
-## Mevcut Sınırlar
+## Custom Class Strategy
 
-Sistem şu anda offline video analizi yapar.
+`config/custom_class_strategy.json` ve `docs/custom_class_strategy.md`, COCO/YOLO içinde doğrudan bulunmayan ama Scenario 3 için önemli özel sınıfları önceliklendirir.
 
-Henüz şunlar yoktur:
+Örnekler:
 
-- sürekli kamera izleme ürünü
-- dashboard
-- ByteTrack / BoT-SORT entegrasyonu
-- custom construction/safety class modeli
-- yüz tanıma
-- kimlik tanıma
+```text
+restricted_zone
+barrier
+gate
+helmet
+safety_vest
+fire
+smoke
+forklift
+traffic_cone
+```
 
 ## Etik Sınır
 
-Yetkisiz kamera veya güvenlik sistemi analizi yapılmamalıdır.
+Bu sistem yalnızca izinli, sahip olunan veya test amaçlı videolarla kullanılmalıdır.
 
-Kişi kimliği, yüz tanıma veya bireysel takip yapılmamalıdır.
+Yüz tanıma, kişi kimliği tespiti, bireysel takip veya yetkisiz kamera analizi amacıyla kullanılmamalıdır.
 
-Sistem yalnızca izinli, sahip olunan veya test amaçlı videolarla kullanılmalıdır.
+## Not
 
-## Senaryo 3 Kapsam Kilidi
-
-Bu proje TEKNOFEST 2026 Yapay Zekâ Dil Ajanları Yarışması 3. Senaryo kapsamına göre geliştirilir.
-
-Odak:
-
-- Video dosyası girdisi alma
-- Olayları tespit etme
-- Kişi, araç ve nesne kanıtlarını çıkarma
-- Riskli durumları belirleme
-- Kritik anları zaman damgalarıyla listeleme
-- Türkçe kısa özet üretme
-- Operatöre aksiyon önerileri sunma
-- JSON benzeri yapılandırılmış çıktı üretme
-- Yerel/offline çalışma
-- Dış API veya kapalı servis bağımlılığı olmadan çalışma
-
-Detaylı kapsam dosyası:
-
-SCENARIO_3_SCOPE.md
-
-## Senaryo 3 Odaklı Yol Haritası
-
-### v0.4 — Senaryo 3 Çıktı Standardı
-
-- Standart JSON çıktı şeması
-- Türkçe kısa özet
-- Zaman damgalı olay listesi
-- Risk seviyesi
-- Operatör aksiyon önerileri
-- Açıklanabilir kanıt alanı
-- Belirsizlik / sınırlılık açıklaması
-
-### v0.5 — Event VLM Reasoner
-
-- Her context window için başlangıç, tepe ve bitiş kareleri seçilir.
-- Qwen/VLM bu kareleri yorumlar.
-- Olay adı, risk gerekçesi ve kritik an açıklaması üretilir.
-
-### v0.6 — Risk & Action Engine
-
-- Olay tipine göre risk seviyesi üretir.
-- Operatöre uygulanabilir aksiyon önerileri sunar.
-- Çıktıyı Türkçe ve yapılandırılmış formatta verir.
-
-### v0.7 — KPI / Benchmark
-
-- Olay tespit doğruluğu
-- Kritik olay yakalama oranı
-- Özet kalitesi
-- Aksiyon önerisi doğruluğu
-- İşlem süresi
-- Model inference süresi
-- Bellek ve donanım kullanımı
-
-### v0.8 — Yarışma Teslim Paketi
-
-- Ön değerlendirme raporu
-- Demo videosu
-- Mimari diyagram
-- Kurulum dokümantasyonu
-- Ölçümleme sonuçları
-- Sunum materyali
-
-## Kapsam Notu
-
-CASIT / ÇAŞIT bu fazda kamera izleme ürünü değildir.
-
-CASIT, TEKNOFEST Senaryo 3 kapsamında yüklenen operasyon videosunu yerel ortamda analiz eden ve karar destek çıktısı üreten offline video intelligence sistemidir.
+Benchmark / KPI raporu ground-truth doğruluk raporu değildir. mAP, precision, recall gibi metrikler için manuel etiketli test seti gerekir.
