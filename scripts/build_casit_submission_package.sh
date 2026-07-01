@@ -2,8 +2,10 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-RUN_DIR="${1:-/home/mpsametozcan/casit-data/outputs/runs/cccc_20260701_213658}"
-TAG_NAME="${CASIT_RELEASE_TAG:-v0.8.0-scenario3}"
+DEFAULT_RUN_DIR="${CASIT_DEFAULT_RUN_DIR:-$HOME/casit-data/outputs/runs/cccc_20260701_213658}"
+RUN_DIR="${1:-$DEFAULT_RUN_DIR}"
+LATEST_TAG="$(git -C "$PROJECT_DIR" describe --tags --abbrev=0 2>/dev/null || echo "untagged")"
+TAG_NAME="${CASIT_RELEASE_TAG:-$LATEST_TAG}"
 PACKAGE_ROOT="${CASIT_SUBMISSION_PACKAGE_DIR:-$HOME/casit-data/outputs/submission_packages}"
 
 RUN_DIR="$(readlink -f "$RUN_DIR")"
