@@ -226,8 +226,8 @@ echo "[17/23] Event VLM Reasoner çalışıyor..."
   --proximity-risk "$JSON_DIR/proximity_risk_report.json" \
   --output-json "$JSON_DIR/event_vlm_reasoning_report.json" \
   --output-md "$REPORT_DIR/event_vlm_reasoning_report.md" \
-  --server-url "$VLM_SERVER_URL" \
-  --model "$VLM_MODEL" \
+  --server-url "$SERVER_URL" \
+  --model "$MODEL" \
   --max-events 5 \
   --max-images-per-event 3 \
   --max-tokens 260

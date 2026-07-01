@@ -1,6 +1,7 @@
 import argparse
 import base64
 import json
+import os
 import re
 from pathlib import Path
 from datetime import datetime
@@ -79,7 +80,7 @@ def ask_vlm_about_frame(
     timestamp: str,
     server_url: str,
     model: str,
-    timeout: int = 180
+    timeout: int = None
 ) -> dict:
     image_b64 = encode_image_base64(image_path)
 
@@ -137,12 +138,31 @@ Important:
         "max_tokens": 350
     }
 
-    response = requests.post(
-        f"{server_url}/v1/chat/completions",
-        headers={"Content-Type": "application/json"},
-        data=json.dumps(payload),
-        timeout=timeout
-    )
+    if timeout is None:
+        timeout = int(os.environ.get("CASIT_VLM_TIMEOUT_SECONDS", "600"))
+
+    max_retries = int(os.environ.get("CASIT_VLM_MAX_RETRIES", "2"))
+    last_error = None
+    response = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = requests.post(
+                f"{server_url}/v1/chat/completions",
+                headers={"Content-Type": "application/json"},
+                data=json.dumps(payload),
+                timeout=timeout
+            )
+            break
+        except requests.exceptions.Timeout as exc:
+            last_error = exc
+            print(f"VLM_TIMEOUT attempt={attempt}/{max_retries} timeout={timeout}s timestamp={timestamp}")
+        except requests.exceptions.RequestException as exc:
+            last_error = exc
+            print(f"VLM_REQUEST_ERROR attempt={attempt}/{max_retries} timestamp={timestamp}: {exc}")
+
+    if response is None:
+        raise RuntimeError(f"VLM request failed after {max_retries} attempts. Last error: {last_error}")
 
     if not response.ok:
         print("---- VLM HTTP ERROR ----")

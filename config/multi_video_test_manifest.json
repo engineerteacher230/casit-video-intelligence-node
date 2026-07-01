@@ -1,0 +1,136 @@
+{
+  "project": {
+    "technical_name": "CASIT",
+    "display_name": "ÇAŞIT",
+    "module": "multi_video_test_manifest",
+    "version": "0.1.0"
+  },
+  "manifest_type": "scenario_3_multi_video_test_set",
+  "important_notes_tr": [
+    "Bu manifest video dosyalarını repo içine almaz; sadece test senaryolarını ve beklenen bağlamları tanımlar.",
+    "Video dosyaları CASIT_DATA_DIR/datasets/raw_videos altında bulunmalıdır.",
+    "Beklenen bağlamlar ground-truth doğruluk etiketi değil; test kapsamı ve regresyon kontrolü için zayıf referans profilidir."
+  ],
+  "data_root_env": "CASIT_DATA_DIR",
+  "default_data_root": "~/casit-data",
+  "video_relative_dir": "datasets/raw_videos",
+  "test_cases": [
+    {
+      "case_id": "CASE_AAA_TRAFFIC_ROUNDABOUT",
+      "file_name": "aaa.mp4",
+      "relative_path": "datasets/raw_videos/aaa.mp4",
+      "expected_profile": {
+        "primary_domain": "traffic",
+        "scene_hint": "roundabout_traffic",
+        "expected_objects": ["car", "person", "truck", "bus", "traffic light"],
+        "expected_event_focus": ["vehicle_flow", "person_vehicle_context", "traffic_scene_understanding"]
+      },
+      "metadata_hint": {
+        "width": 1280,
+        "height": 720,
+        "fps": 25.0,
+        "duration_seconds": 142.76,
+        "size_mb": 25.76
+      },
+      "test_purpose_tr": "Trafik sahnesinde araç yoğunluğu, yaya/araç bağlamı ve genel trafik akışının algılanmasını test eder."
+    },
+    {
+      "case_id": "CASE_BBBBB_STREET_CONFRONTATION",
+      "file_name": "bbbbb.mp4",
+      "relative_path": "datasets/raw_videos/bbbbb.mp4",
+      "expected_profile": {
+        "primary_domain": "traffic",
+        "scene_hint": "street_confrontation",
+        "expected_objects": ["person", "car", "bus", "truck", "motorcycle"],
+        "expected_event_focus": ["crowd_movement", "street_tension", "person_vehicle_context"]
+      },
+      "metadata_hint": {
+        "width": 1280,
+        "height": 720,
+        "fps": 25.0,
+        "duration_seconds": 71.72,
+        "size_mb": 9.38
+      },
+      "test_purpose_tr": "Sokak gerilimi/kalabalık hareketliliği ve araç-yaya bağlamını test eder."
+    },
+    {
+      "case_id": "CASE_CCCC_CONSTRUCTION_SITE",
+      "file_name": "cccc.mp4",
+      "relative_path": "datasets/raw_videos/cccc.mp4",
+      "expected_profile": {
+        "primary_domain": "construction_or_traffic",
+        "scene_hint": "construction_site",
+        "expected_objects": ["truck", "car", "person", "motorcycle"],
+        "expected_event_focus": ["construction_site_activity", "vehicle_person_risk", "worksite_context"]
+      },
+      "metadata_hint": {
+        "width": 854,
+        "height": 444,
+        "fps": 30.0,
+        "duration_seconds": 26.9,
+        "size_mb": 2.13
+      },
+      "test_purpose_tr": "Şantiye/iş sahası bağlamında araç ve insan hareketliliğini test eder."
+    },
+    {
+      "case_id": "CASE_DDD_CROWD_OUTDOOR",
+      "file_name": "ddd.mp4",
+      "relative_path": "datasets/raw_videos/ddd.mp4",
+      "expected_profile": {
+        "primary_domain": "outdoor_crowd",
+        "scene_hint": "crowd",
+        "expected_objects": ["person", "car", "backpack"],
+        "expected_event_focus": ["crowd_movement", "person_vehicle_risk", "proximity_risk"]
+      },
+      "metadata_hint": {
+        "width": 1280,
+        "height": 720,
+        "fps": 25.0,
+        "duration_seconds": 50.0,
+        "size_mb": 6.15
+      },
+      "test_purpose_tr": "Kalabalık, kişi-araç yakınlaşması, proximity risk ve VLM olay yorumlama zincirini test eder."
+    },
+    {
+      "case_id": "CASE_INSAN_SPORTS_FOOTBALL",
+      "file_name": "insan.mp4",
+      "relative_path": "datasets/raw_videos/insan.mp4",
+      "expected_profile": {
+        "primary_domain": "sports",
+        "scene_hint": "football_match_goal_celebration",
+        "expected_objects": ["person", "sports ball"],
+        "expected_event_focus": ["sports_scene_filtering", "non_security_context", "domain_policy_selection"]
+      },
+      "metadata_hint": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 60.0,
+        "duration_seconds": 23.533,
+        "size_mb": 31.75
+      },
+      "test_purpose_tr": "Güvenlik/operasyon dışı spor sahnesinde domain policy seçimini ve yanlış alarm baskılamayı test eder."
+    }
+  ],
+  "expected_artifacts_per_case": [
+    "video_metadata_report.json",
+    "scene_prior.json",
+    "focused_yolo_policy.json",
+    "domain_detection_report.json",
+    "tracked_detection_report.json",
+    "semantic_event_report.json",
+    "relation_dynamics_report.json",
+    "proximity_risk_report.json",
+    "event_vlm_reasoning_report.json",
+    "risk_action_report_v2.json",
+    "standardized_scenario_3_output.json",
+    "scenario_3_output_validation.json",
+    "benchmark_kpi_report.json"
+  ],
+  "success_criteria": {
+    "minimum_cases": 5,
+    "required_submission_ready_cases": 4,
+    "required_validation_status": "pass",
+    "minimum_internal_kpi_for_demo": 80.0,
+    "maximum_vlm_parse_error_per_case": 0
+  }
+}
