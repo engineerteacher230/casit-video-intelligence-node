@@ -66,6 +66,9 @@ cp "$PROJECT_DIR/docs/architecture.md" "$PACKAGE_DIR/repo_docs/"
 cp "$PROJECT_DIR/docs/evaluation.md" "$PACKAGE_DIR/repo_docs/"
 cp "$PROJECT_DIR/docs/competition_report.md" "$PACKAGE_DIR/repo_docs/"
 cp "$PROJECT_DIR/docs/custom_class_strategy.md" "$PACKAGE_DIR/repo_docs/"
+if [[ -f "$PROJECT_DIR/docs/final_technical_evaluation.md" ]]; then
+  cp "$PROJECT_DIR/docs/final_technical_evaluation.md" "$PACKAGE_DIR/repo_docs/"
+fi
 
 echo ""
 echo "---- Copy config files ----"
