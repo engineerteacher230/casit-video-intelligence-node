@@ -279,7 +279,7 @@ echo "[22/23] Senaryo 3 çıktı kalite kontrolü yapılıyor..."
   --output-md "$REPORT_DIR/v0.4_quality_review.md"
 
 echo ""
-echo "[23/23] Benchmark / KPI Reporter çalışıyor..."
+echo "[23/24] Benchmark / KPI Reporter çalışıyor..."
 "$PY_YOLO" src/evaluation/benchmark_kpi_reporter.py \
   --metadata "$JSON_DIR/video_metadata_report.json" \
   --detection "$JSON_DIR/domain_detection_report.json" \
@@ -294,6 +294,12 @@ echo "[23/23] Benchmark / KPI Reporter çalışıyor..."
   --quality-review "$JSON_DIR/scenario_3_quality_review.json" \
   --output-json "$JSON_DIR/benchmark_kpi_report.json" \
   --output-md "$REPORT_DIR/benchmark_kpi_report.md"
+
+echo "[24/24] Executive Jury Report üretiliyor..."
+"$PY_YOLO" src/reporting/executive_jury_report_builder.py \
+  --run-dir "$RUN_DIR" \
+  --output-json "$JSON_DIR/executive_jury_report.json" \
+  --output-md "$REPORT_DIR/executive_jury_report.md"
 
 echo ""
 echo "=========================================="
@@ -373,4 +379,11 @@ echo "$JSON_DIR/benchmark_kpi_report.json"
 echo ""
 echo "Benchmark KPI raporu:"
 echo "$REPORT_DIR/benchmark_kpi_report.md"
+
+echo ""
+echo "Executive Jury JSON:"
+echo "$JSON_DIR/executive_jury_report.json"
+
+echo "Executive Jury raporu:"
+echo "$REPORT_DIR/executive_jury_report.md"
 echo ""
