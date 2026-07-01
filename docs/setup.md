@@ -75,3 +75,18 @@ http://127.0.0.1:8000
 ~/casit-data/outputs/runs/latest/json/executive_jury_report.json
 ~/casit-data/outputs/runs/latest/reports/executive_jury_report.md
 ```
+
+## Kurulum Kontrol Scripti
+
+Kurulumdan sonra sistemin hazır olup olmadığını kontrol etmek için:
+
+    ./scripts/check_casit_installation.sh
+
+Başarılı durumda beklenen özet:
+
+    PASS : 36
+    WARN : 0
+    FAIL : 0
+    INSTALLATION_CHECK_OK
+
+Bu kontrol; repo dosyalarını, config JSON dosyalarını, Python ortamlarını, YOLO modelini, raw video klasörünü, pipeline syntax durumunu ve vLLM server erişimini doğrular.

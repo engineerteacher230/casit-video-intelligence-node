@@ -79,6 +79,30 @@ Video dosyası
 → executive jury report
 ```
 
+## Kurulum Kontrolü
+
+Projeyi çalıştırmadan önce tek komutla kurulum ve çalışma ortamı kontrol edilebilir:
+
+    ./scripts/check_casit_installation.sh
+
+Bu script şu başlıkları kontrol eder:
+
+- repo dosyaları
+- requirements dosyaları
+- dokümantasyon dosyaları
+- config JSON geçerliliği
+- Python ortamları
+- veri dizini
+- YOLO model yolu
+- raw video klasörü
+- pipeline script syntax
+- core Python module compile
+- vLLM server erişimi
+
+Başarılı çıktı:
+
+    INSTALLATION_CHECK_OK
+
 ## Full Pipeline Çalıştırma
 
 ```bash
