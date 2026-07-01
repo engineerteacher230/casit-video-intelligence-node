@@ -1,6 +1,6 @@
 {
-  "version": "0.1",
-  "description": "CASIT / ÇAŞIT general scene-to-YOLO focus policy file. This is not football-specific. Qwen/VLM first infers the scene, then this file decides which YOLO labels should be focused.",
+  "version": "0.5.0",
+  "description": "CASIT / ÇAŞIT domain policy configuration for adaptive YOLO focusing. Expanded for TEKNOFEST Scenario 3 multi-domain video analysis.",
   "default_policy": "unknown_general",
   "scene_type_mapping": {
     "traffic_scene": "traffic_general",
@@ -17,14 +17,47 @@
     "queue_scene": "crowd_general",
     "general_security_scene": "security_general",
     "security_scene": "security_general",
-    "checkpoint_scene": "security_general",
+    "checkpoint_scene": "checkpoint_security",
     "military_activity": "security_general",
-    "convoy_scene": "security_general",
+    "convoy_scene": "convoy_movement",
     "sports_scene": "sports_general",
     "football_scene": "sports_general",
     "soccer_scene": "sports_general",
     "football_match_goal_celebration": "sports_general",
-    "unknown_scene": "unknown_general"
+    "unknown_scene": "unknown_general",
+    "security_checkpoint_scene": "checkpoint_security",
+    "gate_checkpoint_scene": "checkpoint_security",
+    "controlled_entrance_scene": "checkpoint_security",
+    "access_control_scene": "checkpoint_security",
+    "patrol_scene": "convoy_movement",
+    "vehicle_convoy_scene": "convoy_movement",
+    "escort_scene": "convoy_movement",
+    "harbor_scene": "harbor_port",
+    "port_scene": "harbor_port",
+    "dock_scene": "harbor_port",
+    "maritime_scene": "harbor_port",
+    "shipyard_scene": "harbor_port",
+    "airport_scene": "airport_runway",
+    "runway_scene": "airport_runway",
+    "apron_scene": "airport_runway",
+    "airfield_scene": "airport_runway",
+    "fire_scene": "emergency_fire_smoke",
+    "smoke_scene": "emergency_fire_smoke",
+    "emergency_scene": "emergency_fire_smoke",
+    "rescue_scene": "emergency_fire_smoke",
+    "evacuation_scene": "emergency_fire_smoke",
+    "border_scene": "border_restricted_area",
+    "fence_scene": "border_restricted_area",
+    "restricted_area_scene": "border_restricted_area",
+    "perimeter_scene": "border_restricted_area",
+    "parking_scene": "parking_lot_general",
+    "parking_lot_scene": "parking_lot_general",
+    "car_park_scene": "parking_lot_general",
+    "indoor_corridor_scene": "indoor_corridor_entrance",
+    "corridor_scene": "indoor_corridor_entrance",
+    "hallway_scene": "indoor_corridor_entrance",
+    "lobby_scene": "indoor_corridor_entrance",
+    "building_entrance_scene": "indoor_corridor_entrance"
   },
   "keyword_mapping": [
     {
@@ -104,6 +137,96 @@
         "goal",
         "celebration",
         "stadium"
+      ]
+    },
+    {
+      "policy": "checkpoint_security",
+      "keywords": [
+        "checkpoint",
+        "gate",
+        "barrier",
+        "access control",
+        "controlled entrance",
+        "security gate",
+        "guard post"
+      ]
+    },
+    {
+      "policy": "convoy_movement",
+      "keywords": [
+        "convoy",
+        "patrol",
+        "escort",
+        "vehicle group",
+        "grouped vehicles"
+      ]
+    },
+    {
+      "policy": "harbor_port",
+      "keywords": [
+        "harbor",
+        "port",
+        "dock",
+        "quay",
+        "pier",
+        "maritime",
+        "shipyard",
+        "cargo"
+      ]
+    },
+    {
+      "policy": "airport_runway",
+      "keywords": [
+        "airport",
+        "runway",
+        "apron",
+        "airfield",
+        "airplane",
+        "aviation",
+        "terminal"
+      ]
+    },
+    {
+      "policy": "emergency_fire_smoke",
+      "keywords": [
+        "fire",
+        "smoke",
+        "emergency",
+        "rescue",
+        "evacuation",
+        "incident",
+        "disaster"
+      ]
+    },
+    {
+      "policy": "border_restricted_area",
+      "keywords": [
+        "border",
+        "fence",
+        "perimeter",
+        "restricted area",
+        "restricted",
+        "wall"
+      ]
+    },
+    {
+      "policy": "parking_lot_general",
+      "keywords": [
+        "parking",
+        "parking lot",
+        "car park",
+        "parked vehicles"
+      ]
+    },
+    {
+      "policy": "indoor_corridor_entrance",
+      "keywords": [
+        "corridor",
+        "hallway",
+        "lobby",
+        "building entrance",
+        "indoor entrance",
+        "doorway"
       ]
     }
   ],
@@ -461,6 +584,519 @@
         "traffic_cone",
         "barrier",
         "roadwork_sign"
+      ]
+    },
+    "checkpoint_security": {
+      "description": "Checkpoint, gate, controlled entrance and access-control scenes. Focuses on people, vehicles, bags and movement near controlled points.",
+      "scene_type_keywords": [
+        "checkpoint",
+        "gate",
+        "entrance_control",
+        "controlled_entry",
+        "access_control",
+        "security_gate"
+      ],
+      "domain_keywords": [
+        "security",
+        "checkpoint",
+        "access",
+        "restricted"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "traffic light",
+        "stop sign",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck"
+      ],
+      "event_questions": [
+        "Kontrol noktasına yaklaşan insan veya araç var mı?",
+        "Araçlar kontrollü alanda duruyor mu veya bekliyor mu?",
+        "Yaya-araç yakınlaşması var mı?",
+        "Çanta/bavul gibi taşınan nesneler yoğunlaşıyor mu?",
+        "Kontrol noktasında olağan dışı kalabalık veya hareket var mı?"
+      ],
+      "custom_classes_later": [
+        "gate",
+        "barrier",
+        "checkpoint_booth",
+        "uniform",
+        "restricted_zone",
+        "license_plate"
+      ]
+    },
+    "convoy_movement": {
+      "description": "Convoy, patrol, grouped vehicle movement and escort-like scenes. Weapon-specific detection is intentionally excluded.",
+      "scene_type_keywords": [
+        "convoy",
+        "patrol",
+        "escort",
+        "vehicle_group",
+        "grouped_vehicles"
+      ],
+      "domain_keywords": [
+        "security",
+        "traffic",
+        "convoy",
+        "patrol"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "bicycle",
+        "traffic light",
+        "stop sign"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "motorcycle",
+        "bus",
+        "truck",
+        "bicycle"
+      ],
+      "event_questions": [
+        "Araçlar grup halinde aynı yönde hareket ediyor mu?",
+        "Konvoy benzeri düzenli araç dizilimi var mı?",
+        "Konvoy çevresinde yaya veya araç yakınlaşması var mı?",
+        "Araçlardan biri duruyor, ayrılıyor veya yön değiştiriyor mu?",
+        "Güzergâh üzerinde trafik akışını etkileyen durum var mı?"
+      ],
+      "custom_classes_later": [
+        "convoy_vehicle",
+        "escort_vehicle",
+        "roadblock",
+        "barrier",
+        "restricted_zone"
+      ]
+    },
+    "harbor_port": {
+      "description": "Harbor, port, dock, quay and maritime logistics scenes.",
+      "scene_type_keywords": [
+        "harbor",
+        "port",
+        "dock",
+        "quay",
+        "pier",
+        "maritime",
+        "shipyard"
+      ],
+      "domain_keywords": [
+        "maritime",
+        "logistics",
+        "port",
+        "harbor"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "boat",
+        "truck",
+        "car",
+        "bus",
+        "bicycle",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "boat",
+        "truck",
+        "car",
+        "bus"
+      ],
+      "event_questions": [
+        "Liman sahasında insan veya araç hareketliliği var mı?",
+        "Tekne/gemi çevresinde insan-araç yoğunluğu var mı?",
+        "Yükleme-boşaltma alanında olağan dışı hareket var mı?",
+        "Kıyı/liman kenarında riskli yakınlaşma var mı?",
+        "Belirli bölgede kalabalık veya araç yığılması var mı?"
+      ],
+      "custom_classes_later": [
+        "ship",
+        "container",
+        "crane",
+        "dock_gate",
+        "restricted_zone",
+        "cargo_area"
+      ]
+    },
+    "airport_runway": {
+      "description": "Airport, runway, apron and aircraft ground-operation scenes.",
+      "scene_type_keywords": [
+        "airport",
+        "runway",
+        "apron",
+        "airfield",
+        "aircraft_ground",
+        "terminal_area"
+      ],
+      "domain_keywords": [
+        "airport",
+        "aviation",
+        "runway",
+        "airfield"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "airplane",
+        "truck",
+        "bus",
+        "car",
+        "suitcase",
+        "backpack",
+        "handbag"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "airplane",
+        "truck",
+        "bus",
+        "car"
+      ],
+      "event_questions": [
+        "Uçak çevresinde insan veya araç hareketliliği var mı?",
+        "Apron/runway üzerinde beklenmeyen insan veya araç var mı?",
+        "Yer hizmet aracı uçakla veya insanlarla yakınlaşıyor mu?",
+        "Bagaj/yük hareketliliği belirli bölgede yoğunlaşıyor mu?",
+        "Operasyon sahasında olağan dışı durma veya yön değiştirme var mı?"
+      ],
+      "custom_classes_later": [
+        "runway_marking",
+        "service_vehicle",
+        "baggage_cart",
+        "ground_crew",
+        "restricted_zone"
+      ]
+    },
+    "emergency_fire_smoke": {
+      "description": "Emergency, smoke, fire-like, rescue and incident-response scenes. COCO labels are limited; fire/smoke are custom-class candidates.",
+      "scene_type_keywords": [
+        "fire",
+        "smoke",
+        "emergency",
+        "incident",
+        "rescue",
+        "evacuation"
+      ],
+      "domain_keywords": [
+        "emergency",
+        "disaster",
+        "fire",
+        "rescue"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle"
+      ],
+      "event_questions": [
+        "İnsanlar olay bölgesinden uzaklaşıyor mu veya toplanıyor mu?",
+        "Araçlar olay bölgesine yaklaşıyor mu veya duruyor mu?",
+        "Tahliye veya panik benzeri toplu hareket var mı?",
+        "Olay çevresinde yoğunlaşma veya engellenen hareket var mı?",
+        "VLM sahnede duman, yangın veya acil durum belirtisi görüyor mu?"
+      ],
+      "custom_classes_later": [
+        "smoke",
+        "fire",
+        "flame",
+        "ambulance",
+        "fire_truck",
+        "rescue_worker",
+        "evacuation_zone"
+      ]
+    },
+    "border_restricted_area": {
+      "description": "Border, fence, perimeter, restricted zone and facility boundary scenes.",
+      "scene_type_keywords": [
+        "border",
+        "fence",
+        "perimeter",
+        "restricted_area",
+        "facility_boundary",
+        "wall"
+      ],
+      "domain_keywords": [
+        "security",
+        "border",
+        "restricted",
+        "perimeter"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "truck",
+        "motorcycle",
+        "bicycle",
+        "bus",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "truck",
+        "motorcycle",
+        "bicycle",
+        "bus"
+      ],
+      "event_questions": [
+        "Kısıtlı bölge sınırına yaklaşan insan veya araç var mı?",
+        "Çit/duvar hattı boyunca olağan dışı hareket var mı?",
+        "Belirli noktada bekleme, toplanma veya geri dönüş var mı?",
+        "Araç veya insan sınır hattını takip ediyor mu?",
+        "Çanta/bavul taşıyan kişiler kısıtlı bölgeye yaklaşıyor mu?"
+      ],
+      "custom_classes_later": [
+        "fence",
+        "wall",
+        "restricted_zone",
+        "gate",
+        "barrier",
+        "warning_sign"
+      ]
+    },
+    "parking_lot_general": {
+      "description": "Parking lot and vehicle staging area scenes.",
+      "scene_type_keywords": [
+        "parking",
+        "parking_lot",
+        "car_park",
+        "vehicle_staging"
+      ],
+      "domain_keywords": [
+        "traffic",
+        "parking",
+        "vehicle"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle",
+        "backpack",
+        "handbag",
+        "suitcase"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard"
+      ],
+      "tracking_targets": [
+        "person",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle"
+      ],
+      "event_questions": [
+        "Park alanında araç veya insan hareketliliği var mı?",
+        "Araçlar park halinde mi yoksa hareket halinde mi?",
+        "Araç-yaya yakınlaşması var mı?",
+        "Belirli araç çevresinde olağan dışı bekleme var mı?",
+        "Park alanında yoğunlaşma veya ani hareket var mı?"
+      ],
+      "custom_classes_later": [
+        "parking_space",
+        "license_plate",
+        "barrier",
+        "gate",
+        "restricted_zone"
+      ]
+    },
+    "indoor_corridor_entrance": {
+      "description": "Indoor corridor, lobby, building entrance and access hallway scenes.",
+      "scene_type_keywords": [
+        "corridor",
+        "hallway",
+        "lobby",
+        "building_entrance",
+        "indoor_entry",
+        "doorway"
+      ],
+      "domain_keywords": [
+        "indoor",
+        "building",
+        "entrance",
+        "corridor"
+      ],
+      "allowed_yolo_labels": [
+        "person",
+        "backpack",
+        "handbag",
+        "suitcase",
+        "chair",
+        "bench",
+        "cell phone",
+        "laptop"
+      ],
+      "blocked_yolo_labels": [
+        "sheep",
+        "cow",
+        "horse",
+        "elephant",
+        "zebra",
+        "giraffe",
+        "baseball bat",
+        "baseball glove",
+        "sports ball",
+        "tennis racket",
+        "skis",
+        "snowboard",
+        "car",
+        "truck",
+        "bus",
+        "motorcycle",
+        "bicycle",
+        "airplane",
+        "boat"
+      ],
+      "tracking_targets": [
+        "person"
+      ],
+      "event_questions": [
+        "Koridorda kaç benzersiz insan var?",
+        "Giriş/çıkış yönünde yoğunlaşma var mı?",
+        "Uzun süre bekleyen veya ters yönde hareket eden kişi var mı?",
+        "Çanta/bavul taşıyan kişiler belirli noktada yoğunlaşıyor mu?",
+        "Bina girişinde olağan dışı kalabalık veya hareket var mı?"
+      ],
+      "custom_classes_later": [
+        "door",
+        "turnstile",
+        "access_card_reader",
+        "restricted_zone",
+        "queue_line"
       ]
     }
   }
