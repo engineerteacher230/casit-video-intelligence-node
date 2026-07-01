@@ -70,7 +70,7 @@ if [[ ! -f "$VIDEO_PATH" ]]; then
 fi
 
 echo ""
-echo "[0/21] VLM server kontrol ediliyor..."
+echo "[0/22] VLM server kontrol ediliyor..."
 "$PY_VLM" - << PY
 import urllib.request
 url = "$SERVER_URL/v1/models"
@@ -82,13 +82,13 @@ except Exception as e:
 PY
 
 echo ""
-echo "[1/21] Video metadata okunuyor..."
+echo "[1/22] Video metadata okunuyor..."
 "$PY_YOLO" src/video_io/video_metadata_reader.py \
   --video "$VIDEO_PATH" \
   --output "$JSON_DIR/video_metadata_report.json"
 
 echo ""
-echo "[2/21] Coarse frame extraction çalışıyor..."
+echo "[2/22] Coarse frame extraction çalışıyor..."
 "$PY_YOLO" src/video_io/coarse_frame_extractor.py \
   --metadata "$JSON_DIR/video_metadata_report.json" \
   --output-frames "$DATA_DIR/datasets/frames" \
@@ -96,7 +96,7 @@ echo "[2/21] Coarse frame extraction çalışıyor..."
   --resize-width 960
 
 echo ""
-echo "[3/21] Event energy scanner çalışıyor..."
+echo "[3/22] Event energy scanner çalışıyor..."
 "$PY_YOLO" src/adaptive_search/event_energy_scanner.py \
   --frames-report "$JSON_DIR/coarse_frames_report.json" \
   --output-json "$JSON_DIR/event_energy_report.json" \
@@ -105,14 +105,14 @@ echo "[3/21] Event energy scanner çalışıyor..."
   --min-threshold 0.03
 
 echo ""
-echo "[4/21] Context window planner çalışıyor..."
+echo "[4/22] Context window planner çalışıyor..."
 "$PY_YOLO" src/adaptive_search/context_window_planner.py \
   --event-report "$JSON_DIR/event_energy_report.json" \
   --output-json "$JSON_DIR/context_window_plan.json" \
   --max-gap-seconds 0.5
 
 echo ""
-echo "[5/21] Detail window extractor çalışıyor..."
+echo "[5/22] Detail window extractor çalışıyor..."
 "$PY_YOLO" src/video_io/detail_window_extractor.py \
   --context-plan "$JSON_DIR/context_window_plan.json" \
   --output-frames "$DATA_DIR/datasets/frames" \
@@ -120,7 +120,7 @@ echo "[5/21] Detail window extractor çalışıyor..."
   --resize-width 1280
 
 echo ""
-echo "[6/21] Scene scout extractor çalışıyor..."
+echo "[6/22] Scene scout extractor çalışıyor..."
 "$PY_YOLO" src/scene_understanding/scene_scout_extractor.py \
   --video "$VIDEO_PATH" \
   --output-frames "$DATA_DIR/datasets/frames" \
@@ -129,7 +129,7 @@ echo "[6/21] Scene scout extractor çalışıyor..."
   --resize-width 768
 
 echo ""
-echo "[7/21] Qwen/VLM Scene Prior Agent çalışıyor..."
+echo "[7/22] Qwen/VLM Scene Prior Agent çalışıyor..."
 "$PY_VLM" src/scene_understanding/scene_prior_agent.py \
   --scene-scout-report "$JSON_DIR/scene_scout_report.json" \
   --output-json "$JSON_DIR/scene_prior.json" \
@@ -138,14 +138,14 @@ echo "[7/21] Qwen/VLM Scene Prior Agent çalışıyor..."
   --max-frames 6
 
 echo ""
-echo "[8/21] Domain policy seçiliyor..."
+echo "[8/22] Domain policy seçiliyor..."
 "$PY_YOLO" src/policies/domain_policy_selector.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --config config/domain_policies.json \
   --output-json "$JSON_DIR/focused_yolo_policy.json"
 
 echo ""
-echo "[9/21] Domain-aware YOLO çalışıyor..."
+echo "[9/22] Domain-aware YOLO çalışıyor..."
 "$PY_YOLO" src/vision/domain_aware_yolo_detector.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --detail-report "$JSON_DIR/detail_frames_report.json" \
@@ -158,7 +158,7 @@ echo "[9/21] Domain-aware YOLO çalışıyor..."
   --device cuda
 
 echo ""
-echo "[10/21] Tracking çalışıyor..."
+echo "[10/22] Tracking çalışıyor..."
 "$PY_YOLO" src/vision/domain_aware_yolo_tracker.py \
   --domain-detection-report "$JSON_DIR/domain_detection_report.json" \
   --focused-policy "$JSON_DIR/focused_yolo_policy.json" \
@@ -169,7 +169,7 @@ echo "[10/21] Tracking çalışıyor..."
   --min-center-similarity 0.65
 
 echo ""
-echo "[11/21] Relation dynamics analyzer çalışıyor..."
+echo "[11/22] Relation dynamics analyzer çalışıyor..."
 "$PY_YOLO" src/vision/relation_dynamics_analyzer.py \
   --tracked-report "$JSON_DIR/tracked_detection_report.json" \
   --output-json "$JSON_DIR/relation_dynamics_report.json" \
@@ -180,7 +180,7 @@ echo "[11/21] Relation dynamics analyzer çalışıyor..."
   --max-relations 80
 
 echo ""
-echo "[12/21] Proximity risk engine çalışıyor..."
+echo "[12/22] Proximity risk engine çalışıyor..."
 "$PY_YOLO" src/risk/proximity_risk_engine.py \
   --relation-dynamics "$JSON_DIR/relation_dynamics_report.json" \
   --output-json "$JSON_DIR/proximity_risk_report.json" \
@@ -188,14 +188,14 @@ echo "[12/21] Proximity risk engine çalışıyor..."
   --min-risk-level medium
 
 echo ""
-echo "[13/21] Track quality refiner çalışıyor..."
+echo "[13/22] Track quality refiner çalışıyor..."
 "$PY_YOLO" src/vision/track_quality_refiner.py \
   --tracked-report "$JSON_DIR/tracked_detection_report.json" \
   --output-json "$JSON_DIR/refined_tracking_report.json" \
   --small-object-event-gap 30
 
 echo ""
-echo "[14/21] Event evidence builder çalışıyor..."
+echo "[14/22] Event evidence builder çalışıyor..."
 "$PY_YOLO" src/vision/event_evidence_builder.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --focused-policy "$JSON_DIR/focused_yolo_policy.json" \
@@ -203,13 +203,13 @@ echo "[14/21] Event evidence builder çalışıyor..."
   --output-json "$JSON_DIR/event_evidence_report.json"
 
 echo ""
-echo "[15/21] Final Türkçe rapor üretiliyor..."
+echo "[15/22] Final Türkçe rapor üretiliyor..."
 "$PY_YOLO" src/reporting/final_video_report_builder.py \
   --event-evidence "$JSON_DIR/event_evidence_report.json" \
   --output-md "$REPORT_DIR/final_${VIDEO_SAFE}_analysis_report.md"
 
 echo ""
-echo "[16/21] Semantik olay raporu üretiliyor..."
+echo "[16/22] Semantik olay raporu üretiliyor..."
 "$PY_YOLO" src/event_reasoning/semantic_event_builder.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --context-plan "$JSON_DIR/context_window_plan.json" \
@@ -219,7 +219,7 @@ echo "[16/21] Semantik olay raporu üretiliyor..."
   --output-md "$REPORT_DIR/semantic_event_report.md"
 
 echo ""
-echo "[17/21] Event VLM Reasoner çalışıyor..."
+echo "[17/22] Event VLM Reasoner çalışıyor..."
 "$PY_VLM" src/event_reasoning/event_vlm_reasoner.py \
   --semantic-event "$JSON_DIR/semantic_event_report.json" \
   --detail-frames "$JSON_DIR/detail_frames_report.json" \
@@ -233,7 +233,7 @@ echo "[17/21] Event VLM Reasoner çalışıyor..."
   --max-tokens 260
 
 echo ""
-echo "[18/21] Risk & Action Engine v2 çalışıyor..."
+echo "[18/22] Risk & Action Engine v2 çalışıyor..."
 "$PY_YOLO" src/risk/risk_action_engine_v2.py \
   --semantic-event "$JSON_DIR/semantic_event_report.json" \
   --proximity-risk "$JSON_DIR/proximity_risk_report.json" \
@@ -243,7 +243,7 @@ echo "[18/21] Risk & Action Engine v2 çalışıyor..."
   --output-md "$REPORT_DIR/risk_action_report_v2.md"
 
 echo ""
-echo "[19/21] Senaryo 3 karar destek çıktısı üretiliyor..."
+echo "[19/22] Senaryo 3 karar destek çıktısı üretiliyor..."
 "$PY_YOLO" src/reporting/scenario_3_output_builder.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --focused-policy "$JSON_DIR/focused_yolo_policy.json" \
@@ -254,7 +254,7 @@ echo "[19/21] Senaryo 3 karar destek çıktısı üretiliyor..."
   --output-md "$REPORT_DIR/scenario_3_output.md"
 
 echo ""
-echo "[20/21] JSON Schema Standardizer çalışıyor..."
+echo "[20/22] JSON Schema Standardizer çalışıyor..."
 "$PY_YOLO" src/reporting/json_schema_standardizer.py \
   --scene-prior "$JSON_DIR/scene_prior.json" \
   --event-evidence "$JSON_DIR/event_evidence_report.json" \
@@ -265,7 +265,14 @@ echo "[20/21] JSON Schema Standardizer çalışıyor..."
   --validation-json "$JSON_DIR/schema_standardization_report.json"
 
 echo ""
-echo "[21/21] Senaryo 3 çıktı kalite kontrolü yapılıyor..."
+echo "[21/22] Scenario 3 Output Validator çalışıyor..."
+"$PY_YOLO" src/evaluation/scenario_3_output_validator.py \
+  --standardized-output "$JSON_DIR/standardized_scenario_3_output.json" \
+  --output-json "$JSON_DIR/scenario_3_output_validation.json" \
+  --output-md "$REPORT_DIR/scenario_3_output_validation.md"
+
+echo ""
+echo "[22/22] Senaryo 3 çıktı kalite kontrolü yapılıyor..."
 "$PY_YOLO" src/evaluation/scenario_3_quality_reviewer.py \
   --scenario-output "$JSON_DIR/scenario_3_output.json" \
   --output-json "$JSON_DIR/scenario_3_quality_review.json" \
@@ -316,6 +323,12 @@ echo "$REPORT_DIR/standardized_scenario_3_output.md"
 echo ""
 echo "Schema standardization validation:"
 echo "$JSON_DIR/schema_standardization_report.json"
+echo ""
+echo "Scenario 3 output validation JSON:"
+echo "$JSON_DIR/scenario_3_output_validation.json"
+echo ""
+echo "Scenario 3 output validation raporu:"
+echo "$REPORT_DIR/scenario_3_output_validation.md"
 echo ""
 echo "Senaryo 3 karar destek JSON:"
 echo "$JSON_DIR/scenario_3_output.json"
